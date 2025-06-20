@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project & AI Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'neon-blue': '#00D4FF',
+                        'neon-purple': '#8B5CF6',
+                        'dark-bg': '#0A0A0B',
+                        'dark-card': '#1A1A1B',
+                        'dark-border': '#2A2A2B',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .glassmorphism {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        .status-active { @apply bg-green-500 text-white; }
+        .status-planned { @apply bg-yellow-500 text-black; }
+        .status-paused { @apply bg-red-500 text-white; }
+        .status-done { @apply bg-blue-500 text-white; }
+        .priority-high { @apply text-yellow-400; }
+        .priority-medium { @apply text-gray-400; }
+        .priority-low { @apply text-blue-400; }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glassmorphism">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-neon-blue to-neon-purple rounded-lg flex items-center justify-center">
+                        <i class="fas fa-rocket text-white text-sm"></i>
+                    </div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
+                        Project & AI Dashboard
+                    </h1>
+                </div>
+                <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:inline"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <!-- Active Projects -->
+        <section class="glassmorphism rounded-2xl p-6">
+            <div class="flex items-center space-x-3 mb-6">
+                <i class="fas fa-tasks text-neon-blue text-xl"></i>
+                <h2 class="text-2xl font-bold">Active Projects</h2>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Top 5 projects to avoid overwhelm</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                            <th class="text-left py-3 px-4 font-semibold">Project</th>
+                            <th class="text-left py-3 px-4 font-semibold">Next Task</th>
+                            <th class="text-left py-3 px-4 font-semibold">Status</th>
+                            <th class="text-left py-3 px-4 font-semibold">Priority</th>
+                            <th class="text-left py-3 px-4 font-semibold">Last Touched</th>
+                        </tr>
+                    </thead>
+                    <tbody class="space-y-2">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <td class="py-3 px-4 font-medium">AI Chat Assistant</td>
+                            <td class="py-3 px-4">Deploy UI to Vercel</td>
+                            <td class="py-3 px-4">
+                                <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Active</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="priority-high">⭐ High</span>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-18</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <td class="py-3 px-4 font-medium">Task Manager Pro</td>
+                            <td class="py-3 px-4">Setup FastAPI backend</td>
+                            <td class="py-3 px-4">
+                                <span class="status-planned px-2 py-1 rounded-full text-xs font-medium">🟡 Planned</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="priority-medium">⚪ Medium</span>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-15</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <td class="py-3 px-4 font-medium">ML Image Classifier</td>
+                            <td class="py-3 px-4">Add NLP model integration</td>
+                            <td class="py-3 px-4">
+                                <span class="status-paused px-2 py-1 rounded-full text-xs font-medium">🔴 Paused</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="priority-low">🔽 Low</span>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-10</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <td class="py-3 px-4 font-medium">Portfolio Website</td>
+                            <td class="py-3 px-4">Add project showcase</td>
+                            <td class="py-3 px-4">
+                                <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Active</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="priority-high">⭐ High</span>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-17</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <td class="py-3 px-4 font-medium">Data Analytics Tool</td>
+                            <td class="py-3 px-4">Implement data visualization</td>
+                            <td class="py-3 px-4">
+                                <span class="status-planned px-2 py-1 rounded-full text-xs font-medium">🟡 Planned</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="priority-medium">⚪ Medium</span>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-12</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Progress Snapshots -->
+        <section class="glassmorphism rounded-2xl p-6">
+            <div class="flex items-center space-x-3 mb-6">
+                <i class="fas fa-chart-line text-neon-purple text-xl"></i>
+                <h2 class="text-2xl font-bold">Progress Snapshots</h2>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Quick updates for active projects</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glassmorphism rounded-xl p-5 hover:neon-glow transition-all duration-300">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-semibold text-lg">AI Chat Assistant</h3>
+                        <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Active</span>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        <strong>Next:</strong> Deploy to Vercel
+                    </p>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Progress</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-neon-blue to-neon-purple h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">UI complete, APIs in testing</p>
+                    </div>
+                    <div class="flex space-x-3 text-sm">
+                        <a href="#" class="text-neon-blue hover:underline">
+                            <i class="fab fa-github mr-1"></i>GitHub
+                        </a>
+                        <a href="#" class="text-neon-purple hover:underline">
+                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
+                        </a>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3">Updated: 2025-01-18</p>
+                </div>
+
+                <div class="glassmorphism rounded-xl p-5 hover:neon-glow transition-all duration-300">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-semibold text-lg">Portfolio Website</h3>
+                        <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Active</span>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        <strong>Next:</strong> Add project showcase section
+                    </p>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Progress</span>
+                            <span>60%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-neon-blue to-neon-purple h-2 rounded-full" style="width: 60%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Landing page done, adding portfolio section</p>
+                    </div>
+                    <div class="flex space-x-3 text-sm">
+                        <a href="#" class="text-neon-blue hover:underline">
+                            <i class="fab fa-github mr-1"></i>GitHub
+                        </a>
+                        <a href="#" class="text-neon-purple hover:underline">
+                            <i class="fas fa-external-link-alt mr-1"></i>Preview
+                        </a>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3">Updated: 2025-01-17</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Tools Quick Access -->
+        <section class="glassmorphism rounded-2xl p-6">
+            <div class="flex items-center space-x-3 mb-6">
+                <i class="fas fa-robot text-neon-blue text-xl"></i>
+                <h2 class="text-2xl font-bold">AI Tools Quick Access</h2>
+                <span class="text-sm text-gray-500 dark:text-gray-400">One-tap access to essential tools</span>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <a href="https://github.com" target="_blank" class="glassmorphism rounded-xl p-4 text-center hover:neon-glow transition-all duration-300 group">
+                    <i class="fab fa-github text-3xl mb-2 group-hover:text-neon-blue transition-colors"></i>
+                    <p class="font-medium">GitHub</p>
+                    <p class="text-xs text-gray-500">Code & Copilot</p>
+                </a>
+                
+                <a href="https://vercel.com" target="_blank" class="glassmorphism rounded-xl p-4 text-center hover:neon-glow transition-all duration-300 group">
+                    <i class="fas fa-rocket text-3xl mb-2 group-hover:text-neon-purple transition-colors"></i>
+                    <p class="font-medium">Vercel</p>
+                    <p class="text-xs text-gray-500">Deployment</p>
+                </a>
+                
+                <a href="https://grok.x.ai" target="_blank" class="glassmorphism rounded-xl p-4 text-center hover:neon-glow transition-all duration-300 group">
+                    <i class="fas fa-brain text-3xl mb-2 group-hover:text-neon-blue transition-colors"></i>
+                    <p class="font-medium">Grok</p>
+                    <p class="text-xs text-gray-500">AI Assistant</p>
+                </a>
+                
+                <a href="https://cursor.com" target="_blank" class="glassmorphism rounded-xl p-4 text-center hover:neon-glow transition-all duration-300 group">
+                    <i class="fas fa-code text-3xl mb-2 group-hover:text-neon-purple transition-colors"></i>
+                    <p class="font-medium">Cursor</p>
+                    <p class="text-xs text-gray-500">AI IDE</p>
+                </a>
+                
+                <a href="https://perplexity.ai" target="_blank" class="glassmorphism rounded-xl p-4 text-center hover:neon-glow transition-all duration-300 group">
+                    <i class="fas fa-search text-3xl mb-2 group-hover:text-neon-blue transition-colors"></i>
+                    <p class="font-medium">Perplexity</p>
+                    <p class="text-xs text-gray-500">AI Search</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Flow State Essentials & Weekly Check-In -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Flow State Essentials -->
+            <section class="glassmorphism rounded-2xl p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <i class="fas fa-bullseye text-neon-purple text-xl"></i>
+                    <h2 class="text-2xl font-bold">Flow State Essentials</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <i class="fas fa-target text-neon-blue"></i>
+                        <span><strong>One Project:</strong> AI Chat Assistant (Deploy UI)</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <i class="fas fa-clock text-neon-purple"></i>
+                        <span><strong>50-Min Blocks:</strong> Focus timer active</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <i class="fas fa-window-minimize text-neon-blue"></i>
+                        <span><strong>Minimal Tabs:</strong> GitHub + Vercel + Cursor</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <i class="fas fa-coffee text-neon-purple"></i>
+                        <span><strong>Breaks:</strong> 5 min every 25 min (Pomodoro)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Weekly Check-In -->
+            <section class="glassmorphism rounded-2xl p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <i class="fas fa-calendar-check text-neon-blue text-xl"></i>
+                    <h2 class="text-2xl font-bold">Weekly Check-In</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="font-semibold mb-2 text-neon-purple">Focus This Week</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            AI Chat Assistant (deploy MVP), Portfolio Website (add showcase)
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-semibold mb-2 text-neon-blue">Recent Wins</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Completed UI for AI Chat Assistant, set up CI/CD pipeline
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-semibold mb-2 text-neon-purple">Next Actions</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Deploy to Vercel, test APIs, try Cursor for faster coding
+                        </p>
+                    </div>
+                    
+                    <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-xs text-gray-500">Last Updated: 2025-01-18</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Deployment & System Management -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Deployment Status -->
+            <section class="glassmorphism rounded-2xl p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <i class="fas fa-cloud-upload-alt text-neon-blue text-xl"></i>
+                    <h2 class="text-2xl font-bold">Deployment & Monitoring</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <span class="font-medium">AI Chat Assistant</span>
+                        <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Live</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <span class="font-medium">Portfolio Website</span>
+                        <span class="status-planned px-2 py-1 rounded-full text-xs font-medium">🟡 Staging</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <span class="font-medium">Task Manager Pro</span>
+                        <span class="status-paused px-2 py-1 rounded-full text-xs font-medium">🔴 Error</span>
+                    </div>
+                    
+                    <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-xs text-gray-500">
+                            <i class="fas fa-shield-alt mr-1"></i>
+                            Monitoring: Sentry + Vercel Analytics
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Management -->
+            <section class="glassmorphism rounded-2xl p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <i class="fas fa-cogs text-neon-purple text-xl"></i>
+                    <h2 class="text-2xl font-bold">Tech Stack</h2>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium">Frontend</span>
+                        <span class="text-xs text-gray-500">Next.js + Tailwind</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium">Backend</span>
+                        <span class="text-xs text-gray-500">FastAPI + Python</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium">AI/ML</span>
+                        <span class="text-xs text-gray-500">Hugging Face</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium">Deployment</span>
+                        <span class="text-xs text-gray-500">Vercel + AWS</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium">Version Control</span>
+                        <span class="text-xs text-gray-500">GitHub Actions</span>
+                    </div>
+                    
+                    <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-xs text-gray-500">
+                            <i class="fas fa-lock mr-1"></i>
+                            Security: 1Password + AWS S3 backups
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.classList.toggle('dark', currentTheme === 'dark');
+        
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            const progressBars = document.querySelectorAll('[style*="width:"]');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1s ease-in-out';
+                    bar.style.width = width;
+                }, 500);
+            });
+
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.glassmorphism');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
