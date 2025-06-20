@@ -47,7 +47,62 @@
         .priority-high { @apply text-yellow-400; }
         .priority-medium { @apply text-gray-400; }
         .priority-low { @apply text-blue-400; }
+        .editable {
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            padding: 2px 4px;
+            transition: all 0.2s ease;
+        }
+        .editable:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            background-color: rgba(0, 212, 255, 0.1);
+        }
+        .editing {
+            border-color: #00D4FF !important;
+            background-color: rgba(0, 212, 255, 0.2) !important;
+        }
+        .add-btn {
+            background: linear-gradient(45deg, #00D4FF, #8B5CF6);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+        }
+        .delete-btn {
+            background: #ef4444;
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+        tr:hover .delete-btn {
+            opacity: 1;
+        }
+        .status-selector, .priority-selector {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: inherit;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
     </style>
+
 </head>
 <body class="font-inter bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white transition-colors duration-300">
     <!-- Header -->
@@ -73,14 +128,19 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <!-- Active Projects -->
         <section class="glassmorphism rounded-2xl p-6">
-            <div class="flex items-center space-x-3 mb-6">
-                <i class="fas fa-tasks text-neon-blue text-xl"></i>
-                <h2 class="text-2xl font-bold">Active Projects</h2>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Top 5 projects to avoid overwhelm</span>
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-tasks text-neon-blue text-xl"></i>
+                    <h2 class="text-2xl font-bold">Active Projects</h2>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">Click to edit • Hover to delete</span>
+                </div>
+                <button onclick="addProject()" class="add-btn">
+                    <i class="fas fa-plus mr-2"></i>Add Project
+                </button>
             </div>
             
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full" id="projects-table">
                     <thead>
                         <tr class="border-b border-gray-200 dark:border-gray-700">
                             <th class="text-left py-3 px-4 font-semibold">Project</th>
@@ -88,64 +148,11 @@
                             <th class="text-left py-3 px-4 font-semibold">Status</th>
                             <th class="text-left py-3 px-4 font-semibold">Priority</th>
                             <th class="text-left py-3 px-4 font-semibold">Last Touched</th>
+                            <th class="text-left py-3 px-4 font-semibold w-16"></th>
                         </tr>
                     </thead>
-                    <tbody class="space-y-2">
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            <td class="py-3 px-4 font-medium">AI Chat Assistant</td>
-                            <td class="py-3 px-4">Deploy UI to Vercel</td>
-                            <td class="py-3 px-4">
-                                <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Active</span>
-                            </td>
-                            <td class="py-3 px-4">
-                                <span class="priority-high">⭐ High</span>
-                            </td>
-                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-18</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            <td class="py-3 px-4 font-medium">Task Manager Pro</td>
-                            <td class="py-3 px-4">Setup FastAPI backend</td>
-                            <td class="py-3 px-4">
-                                <span class="status-planned px-2 py-1 rounded-full text-xs font-medium">🟡 Planned</span>
-                            </td>
-                            <td class="py-3 px-4">
-                                <span class="priority-medium">⚪ Medium</span>
-                            </td>
-                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-15</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            <td class="py-3 px-4 font-medium">ML Image Classifier</td>
-                            <td class="py-3 px-4">Add NLP model integration</td>
-                            <td class="py-3 px-4">
-                                <span class="status-paused px-2 py-1 rounded-full text-xs font-medium">🔴 Paused</span>
-                            </td>
-                            <td class="py-3 px-4">
-                                <span class="priority-low">🔽 Low</span>
-                            </td>
-                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-10</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            <td class="py-3 px-4 font-medium">Portfolio Website</td>
-                            <td class="py-3 px-4">Add project showcase</td>
-                            <td class="py-3 px-4">
-                                <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Active</span>
-                            </td>
-                            <td class="py-3 px-4">
-                                <span class="priority-high">⭐ High</span>
-                            </td>
-                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-17</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            <td class="py-3 px-4 font-medium">Data Analytics Tool</td>
-                            <td class="py-3 px-4">Implement data visualization</td>
-                            <td class="py-3 px-4">
-                                <span class="status-planned px-2 py-1 rounded-full text-xs font-medium">🟡 Planned</span>
-                            </td>
-                            <td class="py-3 px-4">
-                                <span class="priority-medium">⚪ Medium</span>
-                            </td>
-                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">2025-01-12</td>
-                        </tr>
+                    <tbody class="space-y-2" id="projects-tbody">
+                        <!-- Projects will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -153,70 +160,19 @@
 
         <!-- Progress Snapshots -->
         <section class="glassmorphism rounded-2xl p-6">
-            <div class="flex items-center space-x-3 mb-6">
-                <i class="fas fa-chart-line text-neon-purple text-xl"></i>
-                <h2 class="text-2xl font-bold">Progress Snapshots</h2>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Quick updates for active projects</span>
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-chart-line text-neon-purple text-xl"></i>
+                    <h2 class="text-2xl font-bold">Progress Snapshots</h2>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">Click to edit • Hover to delete</span>
+                </div>
+                <button onclick="addSnapshot()" class="add-btn">
+                    <i class="fas fa-plus mr-2"></i>Add Snapshot
+                </button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glassmorphism rounded-xl p-5 hover:neon-glow transition-all duration-300">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="font-semibold text-lg">AI Chat Assistant</h3>
-                        <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Active</span>
-                    </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        <strong>Next:</strong> Deploy to Vercel
-                    </p>
-                    <div class="mb-3">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Progress</span>
-                            <span>75%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                            <div class="bg-gradient-to-r from-neon-blue to-neon-purple h-2 rounded-full" style="width: 75%"></div>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">UI complete, APIs in testing</p>
-                    </div>
-                    <div class="flex space-x-3 text-sm">
-                        <a href="#" class="text-neon-blue hover:underline">
-                            <i class="fab fa-github mr-1"></i>GitHub
-                        </a>
-                        <a href="#" class="text-neon-purple hover:underline">
-                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
-                        </a>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-3">Updated: 2025-01-18</p>
-                </div>
-
-                <div class="glassmorphism rounded-xl p-5 hover:neon-glow transition-all duration-300">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="font-semibold text-lg">Portfolio Website</h3>
-                        <span class="status-active px-2 py-1 rounded-full text-xs font-medium">🟢 Active</span>
-                    </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        <strong>Next:</strong> Add project showcase section
-                    </p>
-                    <div class="mb-3">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Progress</span>
-                            <span>60%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                            <div class="bg-gradient-to-r from-neon-blue to-neon-purple h-2 rounded-full" style="width: 60%"></div>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">Landing page done, adding portfolio section</p>
-                    </div>
-                    <div class="flex space-x-3 text-sm">
-                        <a href="#" class="text-neon-blue hover:underline">
-                            <i class="fab fa-github mr-1"></i>GitHub
-                        </a>
-                        <a href="#" class="text-neon-purple hover:underline">
-                            <i class="fas fa-external-link-alt mr-1"></i>Preview
-                        </a>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-3">Updated: 2025-01-17</p>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="snapshots-container">
+                <!-- Snapshots will be loaded dynamically -->
             </div>
         </section>
 
@@ -268,28 +224,11 @@
                 <div class="flex items-center space-x-3 mb-6">
                     <i class="fas fa-bullseye text-neon-purple text-xl"></i>
                     <h2 class="text-2xl font-bold">Flow State Essentials</h2>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">Click to edit</span>
                 </div>
                 
-                <div class="space-y-4">
-                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <i class="fas fa-target text-neon-blue"></i>
-                        <span><strong>One Project:</strong> AI Chat Assistant (Deploy UI)</span>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <i class="fas fa-clock text-neon-purple"></i>
-                        <span><strong>50-Min Blocks:</strong> Focus timer active</span>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <i class="fas fa-window-minimize text-neon-blue"></i>
-                        <span><strong>Minimal Tabs:</strong> GitHub + Vercel + Cursor</span>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <i class="fas fa-coffee text-neon-purple"></i>
-                        <span><strong>Breaks:</strong> 5 min every 25 min (Pomodoro)</span>
-                    </div>
+                <div class="space-y-4" id="flow-state-container">
+                    <!-- Flow state items will be loaded dynamically -->
                 </div>
             </section>
 
@@ -298,33 +237,11 @@
                 <div class="flex items-center space-x-3 mb-6">
                     <i class="fas fa-calendar-check text-neon-blue text-xl"></i>
                     <h2 class="text-2xl font-bold">Weekly Check-In</h2>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">Click to edit</span>
                 </div>
                 
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-semibold mb-2 text-neon-purple">Focus This Week</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            AI Chat Assistant (deploy MVP), Portfolio Website (add showcase)
-                        </p>
-                    </div>
-                    
-                    <div>
-                        <h3 class="font-semibold mb-2 text-neon-blue">Recent Wins</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Completed UI for AI Chat Assistant, set up CI/CD pipeline
-                        </p>
-                    </div>
-                    
-                    <div>
-                        <h3 class="font-semibold mb-2 text-neon-purple">Next Actions</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Deploy to Vercel, test APIs, try Cursor for faster coding
-                        </p>
-                    </div>
-                    
-                    <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
-                        <p class="text-xs text-gray-500">Last Updated: 2025-01-18</p>
-                    </div>
+                <div class="space-y-4" id="weekly-checkin-container">
+                    <!-- Weekly check-in items will be loaded dynamically -->
                 </div>
             </section>
         </div>
@@ -408,11 +325,99 @@
     </main>
 
     <script>
+        // Data storage and management
+        let dashboardData = {
+            projects: JSON.parse(localStorage.getItem('dashboardProjects')) || [
+                {
+                    id: 1,
+                    name: 'AI Chat Assistant',
+                    nextTask: 'Deploy UI to Vercel',
+                    status: 'active',
+                    priority: 'high',
+                    lastTouched: '2025-01-18'
+                },
+                {
+                    id: 2,
+                    name: 'Task Manager Pro',
+                    nextTask: 'Setup FastAPI backend',
+                    status: 'planned',
+                    priority: 'medium',
+                    lastTouched: '2025-01-15'
+                },
+                {
+                    id: 3,
+                    name: 'ML Image Classifier',
+                    nextTask: 'Add NLP model integration',
+                    status: 'paused',
+                    priority: 'low',
+                    lastTouched: '2025-01-10'
+                },
+                {
+                    id: 4,
+                    name: 'Portfolio Website',
+                    nextTask: 'Add project showcase',
+                    status: 'active',
+                    priority: 'high',
+                    lastTouched: '2025-01-17'
+                },
+                {
+                    id: 5,
+                    name: 'Data Analytics Tool',
+                    nextTask: 'Implement data visualization',
+                    status: 'planned',
+                    priority: 'medium',
+                    lastTouched: '2025-01-12'
+                }
+            ],
+            snapshots: JSON.parse(localStorage.getItem('dashboardSnapshots')) || [
+                {
+                    id: 1,
+                    name: 'AI Chat Assistant',
+                    status: 'active',
+                    nextTask: 'Deploy to Vercel',
+                    progress: 75,
+                    description: 'UI complete, APIs in testing',
+                    githubUrl: 'https://github.com',
+                    liveUrl: 'https://demo.com',
+                    updated: '2025-01-18'
+                },
+                {
+                    id: 2,
+                    name: 'Portfolio Website',
+                    status: 'active',
+                    nextTask: 'Add project showcase section',
+                    progress: 60,
+                    description: 'Landing page done, adding portfolio section',
+                    githubUrl: 'https://github.com',
+                    liveUrl: 'https://preview.com',
+                    updated: '2025-01-17'
+                }
+            ],
+            flowState: JSON.parse(localStorage.getItem('dashboardFlowState')) || [
+                { icon: 'fas fa-target', color: 'text-neon-blue', label: 'One Project', value: 'AI Chat Assistant (Deploy UI)' },
+                { icon: 'fas fa-clock', color: 'text-neon-purple', label: '50-Min Blocks', value: 'Focus timer active' },
+                { icon: 'fas fa-window-minimize', color: 'text-neon-blue', label: 'Minimal Tabs', value: 'GitHub + Vercel + Cursor' },
+                { icon: 'fas fa-coffee', color: 'text-neon-purple', label: 'Breaks', value: '5 min every 25 min (Pomodoro)' }
+            ],
+            weeklyCheckin: JSON.parse(localStorage.getItem('dashboardWeeklyCheckin')) || [
+                { title: 'Focus This Week', color: 'text-neon-purple', content: 'AI Chat Assistant (deploy MVP), Portfolio Website (add showcase)' },
+                { title: 'Recent Wins', color: 'text-neon-blue', content: 'Completed UI for AI Chat Assistant, set up CI/CD pipeline' },
+                { title: 'Next Actions', color: 'text-neon-purple', content: 'Deploy to Vercel, test APIs, try Cursor for faster coding' }
+            ]
+        };
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('dashboardProjects', JSON.stringify(dashboardData.projects));
+            localStorage.setItem('dashboardSnapshots', JSON.stringify(dashboardData.snapshots));
+            localStorage.setItem('dashboardFlowState', JSON.stringify(dashboardData.flowState));
+            localStorage.setItem('dashboardWeeklyCheckin', JSON.stringify(dashboardData.weeklyCheckin));
+        }
+
         // Theme toggle functionality
         const themeToggle = document.getElementById('theme-toggle');
         const html = document.documentElement;
         
-        // Check for saved theme preference or default to light mode
         const currentTheme = localStorage.getItem('theme') || 'light';
         html.classList.toggle('dark', currentTheme === 'dark');
         
@@ -422,18 +427,288 @@
             localStorage.setItem('theme', newTheme);
         });
 
-        // Add some interactive animations
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate progress bars
-            const progressBars = document.querySelectorAll('[style*="width:"]');
-            progressBars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0%';
-                setTimeout(() => {
-                    bar.style.transition = 'width 1s ease-in-out';
-                    bar.style.width = width;
-                }, 500);
+        // Utility functions
+        function getCurrentDate() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getStatusBadge(status) {
+            const statusMap = {
+                'active': { class: 'status-active', text: '🟢 Active' },
+                'planned': { class: 'status-planned', text: '🟡 Planned' },
+                'paused': { class: 'status-paused', text: '🔴 Paused' },
+                'done': { class: 'status-done', text: '✅ Done' }
+            };
+            const statusInfo = statusMap[status] || statusMap['planned'];
+            return `<span class="${statusInfo.class} px-2 py-1 rounded-full text-xs font-medium">${statusInfo.text}</span>`;
+        }
+
+        function getPriorityBadge(priority) {
+            const priorityMap = {
+                'high': { class: 'priority-high', text: '⭐ High' },
+                'medium': { class: 'priority-medium', text: '⚪ Medium' },
+                'low': { class: 'priority-low', text: '🔽 Low' }
+            };
+            const priorityInfo = priorityMap[priority] || priorityMap['medium'];
+            return `<span class="${priorityInfo.class}">${priorityInfo.text}</span>`;
+        }
+
+        // Projects functionality
+        function renderProjects() {
+            const tbody = document.getElementById('projects-tbody');
+            tbody.innerHTML = dashboardData.projects.map(project => `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <td class="py-3 px-4 font-medium editable" data-field="name" data-id="${project.id}">${project.name}</td>
+                    <td class="py-3 px-4 editable" data-field="nextTask" data-id="${project.id}">${project.nextTask}</td>
+                    <td class="py-3 px-4">
+                        <select class="status-selector" data-field="status" data-id="${project.id}">
+                            <option value="active" ${project.status === 'active' ? 'selected' : ''}>🟢 Active</option>
+                            <option value="planned" ${project.status === 'planned' ? 'selected' : ''}>🟡 Planned</option>
+                            <option value="paused" ${project.status === 'paused' ? 'selected' : ''}>🔴 Paused</option>
+                            <option value="done" ${project.status === 'done' ? 'selected' : ''}>✅ Done</option>
+                        </select>
+                    </td>
+                    <td class="py-3 px-4">
+                        <select class="priority-selector" data-field="priority" data-id="${project.id}">
+                            <option value="high" ${project.priority === 'high' ? 'selected' : ''}>⭐ High</option>
+                            <option value="medium" ${project.priority === 'medium' ? 'selected' : ''}>⚪ Medium</option>
+                            <option value="low" ${project.priority === 'low' ? 'selected' : ''}>🔽 Low</option>
+                        </select>
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400 editable" data-field="lastTouched" data-id="${project.id}">${project.lastTouched}</td>
+                    <td class="py-3 px-4">
+                        <button class="delete-btn" onclick="deleteProject(${project.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Add event listeners for editable fields
+            addEditableListeners();
+        }
+
+        function addProject() {
+            const newProject = {
+                id: Date.now(),
+                name: 'New Project',
+                nextTask: 'Define next task',
+                status: 'planned',
+                priority: 'medium',
+                lastTouched: getCurrentDate()
+            };
+            dashboardData.projects.push(newProject);
+            saveData();
+            renderProjects();
+        }
+
+        function deleteProject(id) {
+            dashboardData.projects = dashboardData.projects.filter(p => p.id !== id);
+            saveData();
+            renderProjects();
+        }
+
+        // Snapshots functionality
+        function renderSnapshots() {
+            const container = document.getElementById('snapshots-container');
+            container.innerHTML = dashboardData.snapshots.map(snapshot => `
+                <div class="glassmorphism rounded-xl p-5 hover:neon-glow transition-all duration-300 relative group">
+                    <button class="delete-btn absolute top-3 right-3" onclick="deleteSnapshot(${snapshot.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-semibold text-lg editable" data-field="name" data-id="${snapshot.id}" data-type="snapshot">${snapshot.name}</h3>
+                        ${getStatusBadge(snapshot.status)}
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        <strong>Next:</strong> <span class="editable" data-field="nextTask" data-id="${snapshot.id}" data-type="snapshot">${snapshot.nextTask}</span>
+                    </p>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Progress</span>
+                            <span class="editable" data-field="progress" data-id="${snapshot.id}" data-type="snapshot">${snapshot.progress}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-neon-blue to-neon-purple h-2 rounded-full" style="width: ${snapshot.progress}%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 editable" data-field="description" data-id="${snapshot.id}" data-type="snapshot">${snapshot.description}</p>
+                    </div>
+                    <div class="flex space-x-3 text-sm">
+                        <a href="${snapshot.githubUrl}" target="_blank" class="text-neon-blue hover:underline">
+                            <i class="fab fa-github mr-1"></i>GitHub
+                        </a>
+                        <a href="${snapshot.liveUrl}" target="_blank" class="text-neon-purple hover:underline">
+                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
+                        </a>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3">Updated: ${snapshot.updated}</p>
+                </div>
+            `).join('');
+            
+            addEditableListeners();
+        }
+
+        function addSnapshot() {
+            const newSnapshot = {
+                id: Date.now(),
+                name: 'New Project',
+                status: 'planned',
+                nextTask: 'Define next task',
+                progress: 0,
+                description: 'Project description',
+                githubUrl: 'https://github.com',
+                liveUrl: 'https://demo.com',
+                updated: getCurrentDate()
+            };
+            dashboardData.snapshots.push(newSnapshot);
+            saveData();
+            renderSnapshots();
+        }
+
+        function deleteSnapshot(id) {
+            dashboardData.snapshots = dashboardData.snapshots.filter(s => s.id !== id);
+            saveData();
+            renderSnapshots();
+        }
+
+        // Flow State functionality
+        function renderFlowState() {
+            const container = document.getElementById('flow-state-container');
+            container.innerHTML = dashboardData.flowState.map((item, index) => `
+                <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                    <i class="${item.icon} ${item.color}"></i>
+                    <span><strong class="editable" data-field="label" data-index="${index}" data-type="flowState">${item.label}:</strong> <span class="editable" data-field="value" data-index="${index}" data-type="flowState">${item.value}</span></span>
+                </div>
+            `).join('');
+            
+            addEditableListeners();
+        }
+
+        // Weekly Check-in functionality
+        function renderWeeklyCheckin() {
+            const container = document.getElementById('weekly-checkin-container');
+            container.innerHTML = dashboardData.weeklyCheckin.map((item, index) => `
+                <div>
+                    <h3 class="font-semibold mb-2 ${item.color} editable" data-field="title" data-index="${index}" data-type="weeklyCheckin">${item.title}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 editable" data-field="content" data-index="${index}" data-type="weeklyCheckin">${item.content}</p>
+                </div>
+            `).join('') + `
+                <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <p class="text-xs text-gray-500">Last Updated: ${getCurrentDate()}</p>
+                </div>
+            `;
+            
+            addEditableListeners();
+        }
+
+        // Editable functionality
+        function addEditableListeners() {
+            document.querySelectorAll('.editable').forEach(element => {
+                element.addEventListener('click', function() {
+                    if (this.classList.contains('editing')) return;
+                    
+                    const originalText = this.textContent;
+                    const field = this.dataset.field;
+                    const id = this.dataset.id;
+                    const index = this.dataset.index;
+                    const type = this.dataset.type;
+                    
+                    this.classList.add('editing');
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = originalText;
+                    input.className = 'w-full bg-transparent border-none outline-none';
+                    
+                    this.innerHTML = '';
+                    this.appendChild(input);
+                    input.focus();
+                    input.select();
+                    
+                    function saveEdit() {
+                        const newValue = input.value.trim() || originalText;
+                        element.textContent = newValue;
+                        element.classList.remove('editing');
+                        
+                        // Update data based on type
+                        if (type === 'snapshot') {
+                            const snapshot = dashboardData.snapshots.find(s => s.id == id);
+                            if (snapshot) {
+                                if (field === 'progress') {
+                                    snapshot[field] = parseInt(newValue) || 0;
+                                } else {
+                                    snapshot[field] = newValue;
+                                }
+                                snapshot.updated = getCurrentDate();
+                            }
+                        } else if (type === 'flowState') {
+                            if (dashboardData.flowState[index]) {
+                                dashboardData.flowState[index][field] = newValue;
+                            }
+                        } else if (type === 'weeklyCheckin') {
+                            if (dashboardData.weeklyCheckin[index]) {
+                                dashboardData.weeklyCheckin[index][field] = newValue;
+                            }
+                        } else {
+                            // Projects
+                            const project = dashboardData.projects.find(p => p.id == id);
+                            if (project) {
+                                project[field] = newValue;
+                                project.lastTouched = getCurrentDate();
+                            }
+                        }
+                        
+                        saveData();
+                        
+                        // Re-render if needed
+                        if (type === 'snapshot' && field === 'progress') {
+                            renderSnapshots();
+                        }
+                    }
+                    
+                    input.addEventListener('blur', saveEdit);
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            saveEdit();
+                        }
+                    });
+                });
             });
+
+            // Add listeners for select dropdowns
+            document.querySelectorAll('.status-selector, .priority-selector').forEach(select => {
+                select.addEventListener('change', function() {
+                    const field = this.dataset.field;
+                    const id = this.dataset.id;
+                    const project = dashboardData.projects.find(p => p.id == id);
+                    if (project) {
+                        project[field] = this.value;
+                        project.lastTouched = getCurrentDate();
+                        saveData();
+                    }
+                });
+            });
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProjects();
+            renderSnapshots();
+            renderFlowState();
+            renderWeeklyCheckin();
+
+            // Animate progress bars
+            setTimeout(() => {
+                const progressBars = document.querySelectorAll('[style*="width:"]');
+                progressBars.forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.transition = 'width 1s ease-in-out';
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
 
             // Add hover effects to cards
             const cards = document.querySelectorAll('.glassmorphism');
